@@ -1,3 +1,8 @@
+## Usage: 
+## from skeletrack.preprocessing import transform_body
+## transform_body(body_info[0][0])
+## body_info[0][0].joints will now contain 3 new columns: vx, vy and vz, which store the transformed coordinates
+
 import numpy as np
 
 def coordinate_base(neck, left_hip, right_hip):
@@ -31,7 +36,3 @@ def transform_body(body):
     body.joints["vz"] = T[2]
     return transformed
 
-## To use: 
-## from skeletrack.preprocessing import transform_body
-## transform_body(body_info[0][0])
-## body_info[0][0].joints will now contain 3 new columns: vx, vy and vz, which store the transformed coordinates
