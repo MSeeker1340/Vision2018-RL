@@ -24,4 +24,9 @@ def transform_body(body):
     neck = coordinates[2]
     left_hip = coordinates[12]
     right_hip = coordinates[16]
-    return transform_coordinate(coordinates, neck, left_hip, right_hip)
+    transformed = transform_coordinate(coordinates, neck, left_hip, right_hip)
+    T = transformed.T
+    body.joints.vx = T[0]
+    body.joints.vy = T[1]
+    body.joints.vz = T[2]
+    return transformed
