@@ -26,7 +26,12 @@ def transform_body(body):
     right_hip = coordinates[16]
     transformed = transform_coordinate(coordinates, neck, left_hip, right_hip)
     T = transformed.T
-    body.joints.vx = T[0]
-    body.joints.vy = T[1]
-    body.joints.vz = T[2]
+    body.joints["vx"] = T[0]
+    body.joints["vy"] = T[1]
+    body.joints["vz"] = T[2]
     return transformed
+
+## To use: 
+## from skeletrack.preprocessing import transform_body
+## transform_body(body_info[0][0])
+## body_info[0][0].joints will now contain 3 new columns: vx, vy and vz, which store the transformed coordinates
