@@ -31,8 +31,8 @@ def transform_body(body):
     right_hip = coordinates[16]
     transformed = transform_coordinate(coordinates, neck, left_hip, right_hip)
     T = transformed.T
-    body.joints["vx"] = T[0]
-    body.joints["vy"] = T[1]
-    body.joints["vz"] = T[2]
+    body.joints["v1"] = T[0]
+    body.joints["v2"] = T[1]
+    body.joints["v3"] = T[2]
     return transformed
 
