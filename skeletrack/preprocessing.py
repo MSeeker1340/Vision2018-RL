@@ -15,7 +15,14 @@ the transformed coordinates.
 represented by the video (clapping vs not-clapping) and the distance to the
 last frame. The result is amended to each `Body`.
 
-The master function `preprocess` binds toghether these operations.
+- The master function `preprocess` binds toghether these operations.
+
+Finally, the `extract_feature_labels` function turns a preprocessed `bodyinfo`
+object to an (X,Y) feature-label tensor pair to be fed into tensorflow. The
+feature matrix `X` has dimension (nframe*nbody) x (13*3*2) with each row
+storing the `v1`, `v2`, `v3`, `d1`, `d2`, `d3` values of 13 joints. The label
+matrix `Y` has dimension (nframe*nbody) x (13*3 + 1) with each row storing the
+`a1`, `a2`, `a3` values of 13 joints as well as the weight.
 '''
 import numpy as np
 
@@ -128,3 +135,25 @@ def compute_weights(bodyinfo, gamma, is_clapping):
 
 def compute_weight(body, frame_to_last, gamma):
     body.weight = gamma**frame_to_last
+    
+##############################
+# Extract feature and label tensor
+JOINTS = [3,4,5,6,7,8,9,10,11,21,22,23,24]
+def extract_feature_labels(bodyinfo):
+    nframes = len(bodyinfo)
+    nbodies = len(bodyinfo[0])
+    nsamples = nframes * nbodies
+    
+    XYs = [extract_feature_label(bodyinfo[frame][person])
+           for frame in range(nframes) for person in range(nbodies)]
+    Xs, Ys = list(zip(*XYs))
+    X = np.vstack(Xs)
+    Y = np.vstack(Ys)
+    return X, Y
+    
+def extract_feature_label(body):
+    joints = body.joints.loc[JOINTS] # filter the important joints
+    x = joints[['v1', 'v2', 'v3', 'd1', 'd2', 'd3']].values.flatten()
+    y = joints[['a1', 'a2', 'a3']].values.flatten()
+    y = np.append(y, body.weight)
+    return x, y
